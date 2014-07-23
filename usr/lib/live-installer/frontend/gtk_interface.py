@@ -26,7 +26,7 @@ import webkit
 import string
 import parted
 
-gettext.install("live-installer", "/usr/share/linuxmint/locale")
+gettext.install("live-installer")
 gtk.gdk.threads_init()
 
 LOADING_ANIMATION = '/usr/share/live-installer/loading.gif'
@@ -252,33 +252,17 @@ class InstallerWindow:
             # dedicated installer mode thingum
             self.window.maximize()
             self.window.fullscreen()        
-        
-        #''' Launch the Slideshow '''
-        #if ("_" in self.setup.language):
-        #    locale_code = self.setup.language.split("_")[0]
-        #else:
-        #     locale_code = self.setup.language
-        
-        #slideshow_path = "/usr/share/live-installer-slideshow/slides/index.html"
-        #if os.path.exists(slideshow_path):            
-        #    browser = webkit.WebView()
-        #    s = browser.get_settings()
-        #    s.set_property('enable-file-access-from-file-uris', True)
-        #    s.set_property('enable-default-context-menu', False)
-        #    browser.open("file://" + slideshow_path  + "#?locale=" + locale_code)
-        #    self.wTree.get_widget("vbox_install").add(browser)
-        #    self.wTree.get_widget("vbox_install").show_all()         
-        # Initiate the slide show
-        self.slideshow_path = "/usr/share/live-installer/slideshow"
-        if os.path.exists(self.slideshow_path):
-            self.slideshow_browser = webkit.WebView()
-            s = self.slideshow_browser.get_settings()
-            s.set_property('enable-file-access-from-file-uris', True)
-            s.set_property('enable-default-context-menu', False)            
-            self.slideshow_browser.open("file://" + os.path.join(self.slideshow_path, 'template.html'))
-            self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
-            self.wTree.get_widget("vbox_install").show_all()                                                            
-        
+
+        # Configure slideshow webview
+        self.slideshow_browser = webkit.WebView()
+        s = self.slideshow_browser.get_settings()
+        s.set_property('enable-file-access-from-file-uris', True)
+        s.set_property('enable-default-context-menu', False)
+        self.slideshow_browser.load_string(_('No slideshow template found.'), 'text/html', 'UTF-8', 'file:///')
+        self.wTree.get_widget("vbox_install").add(self.slideshow_browser)
+        self.wTree.get_widget("vbox_install").show_all()
+
+        # Configure disks webview
         self.partitions_browser = webkit.WebView()
         s = self.partitions_browser.get_settings()
         s.set_property('enable-file-access-from-file-uris', True)
